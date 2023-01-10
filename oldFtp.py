@@ -15,7 +15,10 @@ class OldFtp(CustomLogger):
         return self
 
     def __fetchTableData(self, url) -> list[dict]:
+        self.logger.info('fetching from website')
         page = requests.get(url)
+        self.logger.info('fetching website done')
+
         soup = BeautifulSoup(page.text, features="html.parser")
         seriesElement = soup.find("div", class_="su-tabs")
         seriesContent = []
@@ -36,7 +39,9 @@ class OldFtp(CustomLogger):
         return seriesContent
 
     def fetchData(self):
+        self.logger.info("fetching contents from api")
         allData = requests.get(f"http://circleftp.net/new-post-api/page/{self.page}").json()
+        self.logger.info("done fetching content.")
 
         postIds: list[str] = allData.keys()
         posts = []
@@ -79,9 +84,6 @@ class OldFtp(CustomLogger):
 
 if __name__ == '__main__':
     ftp = OldFtp()
-    # data = ftp.page(1).fetchData()
+    data = ftp.page(1).fetchData()
     file = open("data.json", "w")
-    file.writelines("hello world")
-
-    # print()
-    pass
+    file.writelines(json.dumps(data, indent=2))
