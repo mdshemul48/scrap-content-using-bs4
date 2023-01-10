@@ -1,19 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
+from util import isVideoFile
 
 
 class Ftp():
+
     def page(self, page: int):
         self.page = page
         return self
 
-    def __getContent(self, oldContent: str) -> list[dict]:
-        print(oldContent)
-
-    def __fetchSeries(self, url):
-        print(url)
+    def __fetchTableData(self, url) -> list[dict]:
         page = requests.get(url)
-
         soup = BeautifulSoup(page.text, features="html.parser")
         seriesElement = soup.find("div", class_="su-tabs")
         seriesContent = []
@@ -30,20 +27,32 @@ class Ftp():
                     "link": link
                 })
             seriesContent.append(seasonData)
-
+            break
         return seriesContent
 
     def fetchData(self):
-        data = requests.get(f"http://circleftp.net/new-post-api/page/{self.page}").json()
-        postIds: list[str] = data.keys()
-        posts = []
-        for postId in postIds:
-            tags, categories,  title, poster, downloadLink, content, url = data[postId]
-            # self.__getContent(content)
+        allData = requests.get(f"http://circleftp.net/new-post-api/page/{self.page}").json()
 
-            series: list[dict] = None
-            if ('su_tabs' in content):
-                series = self.__fetchSeries(url)
+        postIds: list[str] = allData.keys()
+        posts = []
+        count = 1
+        for postId in postIds:
+            print(f"processing id: {postId} -> count: {str(count)}")
+            count += 1
+            tags, categories,  title, poster, downloadLink, content, url = allData[postId]
+            data = None
+            dataType = None
+            if len(downloadLink) > 0:
+                data = downloadLink
+                dataType = 'singleVideo' if isVideoFile(downloadLink) else "singleFile"
+            if 'su_tabs' in content and not "All Parts" in content:
+                # data = self.__fetchTableData(url)
+                dataType = "TvSeries"
+                pass
+            elif "All Parts" in content:
+                # data = self.__fetchTableData(url)
+                dataType = "multipleFile"
+
             post = {
                 "id": postId,
                 "title": title,
@@ -51,15 +60,16 @@ class Ftp():
                 "poster": poster,
                 "categories": categories.split(",")[:-1],
                 "downloadLink": downloadLink,
-                "content": series if series else content,
-                "url": url
+                "url": url,
+                "contentType": dataType,
+                "content": data,
             }
             posts.append(post)
-            break
         return posts
 
 
 if __name__ == '__main__':
+    import json
     ftp = Ftp()
     data = ftp.page(1).fetchData()
-    # print(data)
+    print(json.dumps(data, indent=1))
