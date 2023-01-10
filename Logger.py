@@ -6,17 +6,23 @@ class CustomLogger:
     def __init__(self, name: str) -> None:
         self.logger = logging.Logger(name)
 
-        c_handler = logging.StreamHandler()
+        consoleLog = logging.StreamHandler()
 
         now = datetime.now()
-        f_handler = logging.FileHandler("log_" + str(now.strftime("%d-%m-%Y %H-%M-%S")+".log"))
-        c_handler.setLevel(level=logging.INFO)
-        f_handler.setLevel(logging.ERROR)
+        fileName = f'log_{str(now.strftime("%d-%m-%Y %H-%M-%S"))}.log'
+        print(fileName)
+        errorLog = logging.FileHandler("error_"+fileName)
+        allLog = logging.FileHandler("all_"+fileName)
+        consoleLog.setLevel(level=logging.INFO)
+        errorLog.setLevel(logging.ERROR)
+        allLog.setLevel(logging.NOTSET)
 
         format = logging.Formatter('%(asctime)s - %(name)s :- %(levelname)s ---> %(message)s',
                                    datefmt='%d-%b-%y %H:%M:%S')
-        c_handler.setFormatter(format)
-        f_handler.setFormatter(format)
+        consoleLog.setFormatter(format)
+        errorLog.setFormatter(format)
+        allLog.setFormatter(format)
 
-        self.logger.addHandler(c_handler)
-        self.logger.addHandler(f_handler)
+        self.logger.addHandler(consoleLog)
+        self.logger.addHandler(errorLog)
+        self.logger.addHandler(allLog)
