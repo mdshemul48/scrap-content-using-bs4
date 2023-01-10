@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 
 class CustomLogger:
@@ -6,7 +7,9 @@ class CustomLogger:
         self.logger = logging.Logger(name)
 
         c_handler = logging.StreamHandler()
-        f_handler = logging.FileHandler('file.log')
+
+        now = datetime.now()
+        f_handler = logging.FileHandler("log_" + str(now.strftime("%d-%m-%Y %H-%M-%S")+".log"))
         c_handler.setLevel(level=logging.INFO)
         f_handler.setLevel(logging.ERROR)
 
