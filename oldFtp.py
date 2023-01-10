@@ -1,9 +1,14 @@
 import requests
 from bs4 import BeautifulSoup
 from util import isVideoFile
+from Logger import CustomLogger
+import json
 
 
-class Ftp():
+class OldFtp(CustomLogger):
+    def __init__(self) -> None:
+        super().__init__(self.__class__.__name__)
+        self.logger.info("starting script")
 
     def page(self, page: int):
         self.page = page
@@ -37,39 +42,46 @@ class Ftp():
         posts = []
         count = 1
         for postId in postIds:
-            print(f"processing id: {postId} -> count: {str(count)}")
+            self.logger.info(f"processing id: {postId} -> count: {str(count)}")
             count += 1
             tags, categories,  title, poster, downloadLink, content, url = allData[postId]
-            data = None
-            dataType = None
-            if len(downloadLink) > 0:
-                data = downloadLink
-                dataType = 'singleVideo' if isVideoFile(downloadLink) else "singleFile"
-            if 'su_tabs' in content and not "All Parts" in content:
-                # data = self.__fetchTableData(url)
-                dataType = "TvSeries"
-                pass
-            elif "All Parts" in content:
-                # data = self.__fetchTableData(url)
-                dataType = "multipleFile"
+            try:
+                data = None
+                dataType = None
+                if len(downloadLink) > 0:
+                    data = downloadLink
+                    dataType = 'singleVideo' if isVideoFile(downloadLink) else "singleFile"
+                if 'su_tabs' in content and not "All Parts" in content:
+                    data = self.__fetchTableData(url)
+                    dataType = "TvSeries"
+                    pass
+                elif "All Parts" in content:
+                    data = self.__fetchTableData(url)
+                    dataType = "multipleFile"
 
-            post = {
-                "id": postId,
-                "title": title,
-                "tags": tags,
-                "poster": poster,
-                "categories": categories.split(",")[:-1],
-                "downloadLink": downloadLink,
-                "url": url,
-                "contentType": dataType,
-                "content": data,
-            }
-            posts.append(post)
+                post = {
+                    "id": postId,
+                    "title": title,
+                    "tags": tags,
+                    "poster": poster,
+                    "categories": categories.split(",")[:-1],
+                    "downloadLink": downloadLink,
+                    "url": url,
+                    "contentType": dataType,
+                    "content": data,
+                }
+                posts.append(post)
+            except:
+                self.logger.error(f"processing id: {postId} -> count: {str(count)} URl: {url}")
+        self.logger.info("Done Scraping")
         return posts
 
 
 if __name__ == '__main__':
-    import json
-    ftp = Ftp()
-    data = ftp.page(1).fetchData()
-    print(json.dumps(data, indent=1))
+    ftp = OldFtp()
+    # data = ftp.page(1).fetchData()
+    file = open("data.json", "w")
+    file.writelines("hello world")
+
+    # print()
+    pass
