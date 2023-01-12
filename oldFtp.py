@@ -10,7 +10,7 @@ class OldFtp(CustomLogger):
         super().__init__(self.__class__.__name__)
         self.logger.info("starting script")
 
-    def page(self, page: int):
+    def setPage(self, page: int):
         self.page = page
         return self
 
@@ -84,6 +84,6 @@ class OldFtp(CustomLogger):
 
 if __name__ == '__main__':
     ftp = OldFtp()
-    data = ftp.page(1).fetchData()
+    data = ftp.setPage(1).fetchData()
     file = open("data.json", "w")
     file.writelines(json.dumps(data, indent=2))

@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+import os
 
 
 class CustomLogger:
@@ -7,12 +8,13 @@ class CustomLogger:
         self.logger = logging.Logger(name)
 
         consoleLog = logging.StreamHandler()
+        if not os.path.exists("log"):
+            os.makedirs("log")
 
         now = datetime.now()
         fileName = f'log_{str(now.strftime("%d-%m-%Y %H-%M-%S"))}.log'
-        print(fileName)
-        errorLog = logging.FileHandler("error_"+fileName)
-        allLog = logging.FileHandler("all_"+fileName)
+        errorLog = logging.FileHandler("log/error_"+fileName)
+        allLog = logging.FileHandler("log/all_"+fileName)
         consoleLog.setLevel(level=logging.INFO)
         errorLog.setLevel(logging.ERROR)
         allLog.setLevel(logging.NOTSET)
