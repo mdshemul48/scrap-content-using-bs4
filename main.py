@@ -4,9 +4,7 @@ import json
 
 def main():
     ftp = OldFtp()
-    allData = []
-    for i in range(1, 10+1):
-        allData += ftp.setPage(i).fetchData()
+    allData = ftp.setPage(1).fetchData()
 
     file = open("data.json", "w")
     file.writelines(json.dumps(allData, indent=2))
