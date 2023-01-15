@@ -1,5 +1,3 @@
-import requests
-from guessit import guessit
 from enum import Enum
 
 
@@ -16,8 +14,9 @@ class Post:
     year: int = None
     title: str = None
     watchTime: str = None
+    quality: str = None
 
-    poster = None
+    poster: bytes = None
 
     content: list | str | list[dict] = None
     contentType: ContentType = None
@@ -30,7 +29,6 @@ class Post:
         self.title = title
         self.name = name
         self.year = year
-        return self
 
     def addContent(self, content: list | str | list[dict], contentType: ContentType):
         self.content = content
@@ -53,9 +51,37 @@ class Post:
         self.watchTime = watchTime
         return self
 
+    def addQuality(self, quality: str):
+        self.quality = quality
+        return self
+
+    def addPoster(self, poster: bytes):
+        self.poster = poster
+        return self
+
+    def build(self) -> dict:
+        return {
+            "name": self.name,
+            "year": self.year,
+            "title": self.title,
+            "watchTime": self.watchTime,
+            "quality": self.quality,
+            "type": self.contentType.value,
+            "categories": self.categories,
+            "tags": self.tags,
+            "metaData": self.metaData,
+            "content": self.content,
+            "poster": self.poster
+        }
+
 
 def main():
-    file: list[dict] = open("data.json", "r").read()
+    singlePost = Post("The Godfather", "The Godfather", 1972).addContent(
+        "https://www.youtube.com/watch?v=sY1S34973zA", Post.ContentType.SINGLE_VIDEO).addCategories([1, 2, 3]).addTags(
+        "The Godfather, 1972, Mafia, Crime, Drama, Thriller").addMetaDeta(
+        "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.").addWatchTime(
+        "2h 55m").addQuality("1080p").addPoster(open("test.jpg", "rb").read()).build()
+    print(singlePost)
 
 
 if __name__ == "__main__":
