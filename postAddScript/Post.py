@@ -21,7 +21,7 @@ class Post:
     content: list | str | list[dict] = None
     contentType: ContentType = None
 
-    categories: list[int] = None
+    categories: str = None
     tags: str = None
     metaData: str = None
 
@@ -35,7 +35,7 @@ class Post:
         self.contentType = contentType
         return self
 
-    def addCategories(self, categories: list[int]):
+    def addCategories(self, categories: str):
         self.categories = categories
         return self
 
@@ -72,7 +72,7 @@ class Post:
             "tags": self.tags,
             "metaData": self.metaData,
             "content": self.content,
-            "poster": self.poster
+            "image": self.poster
         }
 
 

@@ -14,16 +14,17 @@ class NewFtp:
         if response.status_code != 202:
             raise Exception("Login failed with this user.")
         jsonData = response.json()
-        self.jsonToken = jsonData["token"]
+        self.jsonToken = jsonData["access_token"]
 
     def requestUrl(self, path: str):
         return self.baseUrl + path
 
-    def submitPost(self, post: dict):
+    def submitPost(self, post: dict, file: bytes) -> dict:
         headers = {
             "Authorization": "Bearer " + self.jsonToken
         }
-        response = requests.post(self.requestUrl("api/posts"), data=post, headers=headers)
+        response = requests.post(self.requestUrl("api/posts"), data=post, headers=headers, files={"image": file})
+        print(response.json())
         if response.status_code != 201:
             raise Exception("Post submission failed.")
 
