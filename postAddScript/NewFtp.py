@@ -24,7 +24,6 @@ class NewFtp:
             "Authorization": "Bearer " + self.jsonToken
         }
         response = requests.post(self.requestUrl("api/posts"), data=post, headers=headers, files={"image": file})
-        print(response.json())
         if response.status_code != 201:
             raise Exception("Post submission failed.")
 
