@@ -4,19 +4,29 @@ from guessit import guessit
 import requests
 from NewFtp import NewFtp
 from Logger import CustomLogger
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 def main():
-    jsonFile = open("data.json", "r")
-    postsData: list[dict] = json.loads(jsonFile.read())
+    link: str = os.getenv("URL_LINK")
+    email: str = os.getenv("EMAIL")
+    password: str = os.getenv("PASSWORD")
 
+    jsonFile = open("data.json", "r")
+    postsData: list[dict] = json.loads(jsonFile.read()).reverse()
     categoriesId = json.loads(open("categories.json").read())
 
-    ftp = NewFtp("http://localhost/", "mdshemul480@gmail.com", "123456")
-    logger = CustomLogger("main.py")
+    ftp = NewFtp(link, email, password)
 
+    logger = CustomLogger("main.py").logger
+
+    count = 1
     for postData in postsData:
-        logger.info(f"Processing:- {postData['id']} Link: {postData['url']}")
+        logger.info(f"count: {str(count)}-> Processing:- {postData['id']} Link: {postData['url']}")
+        count += 1
         try:
             postTitleExtractedData = guessit(postData["title"])
 

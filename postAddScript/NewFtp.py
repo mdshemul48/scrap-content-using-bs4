@@ -1,9 +1,5 @@
 import requests
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
 
 class NewFtp:
     jsonToken: str = None
@@ -31,5 +27,4 @@ class NewFtp:
 
 
 if __name__ == "__main__":
-
-    ftp = NewFtp("http://localhost/", "mdshemul480@gmail.com", "123456")
+    ftp = NewFtp("http://localhost/", "admin@gmail.com", "_________")
