@@ -1,6 +1,6 @@
 # Scraping Script
 
-This script is designed to scrape data from a specified website. The script uses the Python library `beautifulsoup4` to parse the HTML and extract the desired data. The extracted data can then be saved to a CSV file for further analysis.
+This script is designed to scrape data from a specified website. The script uses the Python library `beautifulsoup4` to parse the HTML and extract the desired data. The extracted data can then be saved to a JSON file for further proccess.
 
 ## Features
 
