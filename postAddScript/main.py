@@ -16,7 +16,7 @@ def main():
     password: str = os.getenv("PASSWORD")
 
     jsonFile = open("data.json", "r")
-    postsData: list[dict] = json.loads(jsonFile.read()).reverse()
+    postsData: list[dict] = json.loads(jsonFile.read())[::-1]
     categoriesId = json.loads(open("categories.json").read())
 
     ftp = NewFtp(link, email, password)
@@ -84,7 +84,7 @@ def main():
             ftp.submitPost(post.build(), open("poster.jpg", "rb"))
 
         except Exception as e:
-            logger.error(f"Error while processing {postData['id']}: {e} Link: {postData['url']}")
+            logger.error(f"failed:-{str(count)} processing:- {postData['id']}: {e} Link: {postData['url']}")
 
 
 if __name__ == "__main__":
